@@ -1,16 +1,26 @@
+
 {
-    "builders": [
+    "variables":
+    {
+        "aws_access_key": "{{ env `AWS_ACCESS_KEY_ID` }}",
+        "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+        "aws_default_region": "{{ env `AWS_DEFAULT_REGION` }}",
+        "canonical_id": "099720109477"
+    },
+
+    "builders":
+    [
         {
             "name": "ProjectX - AWS Ubuntu + Docker AMI Builder",
             "type": "amazon-ebs",
-            "region": "us-east-1",
+            "region": "{{ user `aws_default_region` }}",
             "source_ami_filter": {
                 "filters": {
                     "virtualization-type": "hvm",
                     "name": "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*",
                     "root-device-type": "ebs"
                 },
-                "owners": ["099720109477"],
+                "owners": ["{{ user `canonical_id` }}"],
                 "most_recent": true
             },
             "instance_type": "t2.micro",
@@ -19,7 +29,9 @@
             "force_deregister": true
         }
     ],
-    "provisioners": [
+    
+    "provisioners":
+    [
         {
             "type": "shell",
             "inline": [
