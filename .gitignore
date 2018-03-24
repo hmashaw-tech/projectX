@@ -9,12 +9,15 @@
 keys
 *.key
 
-# Logs
-logs
-*.log
+#
+ansible-inventory
 
 #
 node_modules/
+
+# Logs
+logs
+*.log
 
 #
 *.retry
