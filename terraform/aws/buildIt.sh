@@ -27,12 +27,11 @@ if [[ $yn == 'yes' ]]; then
     . ./swarm-init.sh
 
     echo "Getting Swarm Tokens ..."
-    . ./swarm-tokens.sh
+    . ./swarm-getTokens.sh
 
     echo "Running Terraform plan ..."
     terraform plan
 
-    terraform plan
     echo "To continue and add swarm workers, run terraform apply..."
 else
     echo "Okay, stopping build."
