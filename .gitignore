@@ -2,11 +2,19 @@
 *.tfstate
 *.tfstate.backup
 
-
 # Module directory
 .terraform/
 
+# Keys
+keys
+*.key
 
 # Logs
 logs
 *.log
+
+#
+node_modules/
+
+#
+*.retry
