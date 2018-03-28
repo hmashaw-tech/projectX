@@ -21,7 +21,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.labels.svc-type=mongodb
+          - node.labels.svc-type == mongodb
     volumes:
       - /data/dc1_db1:/data/db
     ports:
