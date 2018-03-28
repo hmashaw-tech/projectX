@@ -7,7 +7,7 @@ variable swarm_ami_id { default = "unknown" }
 
 variable swarm_manager_ip { default = "" }
 
-variable swarm_managers { default = 1 }
+variable swarm_managers { default = 2 }
 variable swarm_workers { default = 2 }
 
 variable swarm_instance_type { default = "t2.micro" }

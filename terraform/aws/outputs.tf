@@ -24,3 +24,17 @@ output "swarm_manager_3_private_ip" {
   value = "${aws_instance.swarm-manager.2.private_ip}"
 }
 */
+
+output "swarm-managers" {
+  description = "List of Swarm Managers"
+  value       = "${aws_instance.swarm-manager.*.tags.Name}"
+}
+
+output "swarm-workers" {
+  description = "List of Swarm Workers"
+  value       = "${aws_instance.swarm-worker.*.tags.Name}"
+}
+
+output "swarm-vpc-id" {
+  value = "${module.vpc.vpc-id}"
+}

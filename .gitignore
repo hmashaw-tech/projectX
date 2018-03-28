@@ -9,6 +9,9 @@
 keys
 *.key
 
+# InSpec params file
+params.yml
+
 #
 ansible-inventory
 
@@ -21,3 +24,4 @@ logs
 
 #
 *.retry
+*.lock
