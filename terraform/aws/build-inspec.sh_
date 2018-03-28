@@ -1,0 +1,10 @@
+#
+
+terraform output  | \
+    sed s/=/:/g   | \
+    sed "s/\[//g" | \
+    sed "s/\]//g" | \
+    sed "s/,//g"  | \
+    sed "s/swarm-manager-/- swarm-manager-/g" | \
+    sed "s/swarm-worker-/- swarm-worker-/g" \
+    > ../../inspec/swarm-config/files/params.yml

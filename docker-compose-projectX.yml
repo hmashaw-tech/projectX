@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+  Visualizer:
+    image: dockersamples/visualizer:stable
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - projectX_net
+
+  mongoDB:
+    image: mongo:3.6.2
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.svc-type=mongodb
+    volumes:
+      - /data/dc1_db1:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      projectX_net:
+        aliases:
+          - mongodb-server
+
+  BusyBox:
+    image: busybox
+    command: "sleep 31557600"
+    deploy:
+      replicas: 1
+    networks:
+      - projectX_net
+
+  NinjaApp:
+    image: markshaw/ninjaapp:1.0
+    deploy:
+      replicas: 2
+    ports:
+      - "8000:8000"
+    networks:
+      - projectX_net
+
+
+networks:
+  projectX_net:
+
