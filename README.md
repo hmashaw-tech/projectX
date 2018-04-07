@@ -11,6 +11,17 @@ IaC w/ Deployment Pipeline
   * [Ansible](https://www.ansible.com) deployed
   * [Chef InSpec](https://www.chef.io/inspec/) deployed
 
+## Usage
+
+* Confirm the AWS CLI has been configured.  Either
+  * run `aws configure`
+  * set environment variables
+    * export AWS_ACCESS_KEY_ID=********************
+    * export AWS_SECRET_ACCESS_KEY=***************************************
+    * export AWS_DEFAULT_REGION=us-west-2
+
+* Set the IP for the management console
+  * export TF_VAR_vpc_ingressIP=#.#.#.#
 
 ## Acknowledgments
 
