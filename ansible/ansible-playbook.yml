@@ -1,5 +1,7 @@
 ---
-- hosts: swarm-manager
+- name: Configure MongoDB Host
+  hosts: swarm-manager
+  gather_facts: false
   become: yes
 
   tasks:

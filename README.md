@@ -7,6 +7,9 @@ IaC w/ Deployment Pipeline
 * Workstation with
   * [AWS CLI](https://aws.amazon.com/cli/) deployed
   * [HashiCorp Packer](https://www.packer.io) deployed
+  * [HashiCorp Terraform](https://www.terraform.io) deployed
+  * [Ansible](https://www.ansible.com) deployed
+  * [Chef InSpec](https://www.chef.io/inspec/) deployed
 
 
 ## Acknowledgments
