@@ -1,0 +1,11 @@
+---
+- name: Configure MongoDB Host
+  hosts: swarm-manager
+  gather_facts: false
+  become: yes
+
+  tasks:
+    - name: Create DB Directory
+      file:
+        path: /data/dc1_db1
+        state: directory

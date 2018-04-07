@@ -4,3 +4,24 @@
 
 # Module directory
 .terraform/
+
+# Keys
+keys
+*.key
+
+# InSpec params file
+params.yml
+
+#
+ansible-inventory
+
+#
+node_modules/
+
+# Logs
+logs
+*.log
+
+#
+*.retry
+*.lock
