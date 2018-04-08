@@ -2,6 +2,9 @@ resource "aws_instance" "swarm-manager" {
     count = "${var.swarm_managers}"
     ami = "${var.swarm_ami_id}"
     instance_type = "${var.swarm_instance_type}"
+
+    # Added to force IG creation when running just swarm-init
+    depends_on = ["module.vpc-IG"]
     
     # VPC subnet
     # Spread instances across the subnets
