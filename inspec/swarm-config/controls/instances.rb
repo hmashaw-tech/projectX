@@ -29,7 +29,7 @@ control 'swarm-managers' do
             its('image_id') { should eq ami_id }
             its('vpc_id') { should eq vpc_id }
             its('instance_type') { should eq 't2.micro' }
-            its('public_ip_address') { should exist }
+            its('public_ip_address') { should be }
         end
     end
 end
@@ -45,7 +45,7 @@ control 'swarm-workers' do
             its('image_id') { should eq ami_id }
             its('vpc_id') { should eq vpc_id }
             its('instance_type') { should eq 't2.micro' }
-            its('public_ip_address') { should exist }
+            its('public_ip_address') { should be }
         end
     end
 end

@@ -18,10 +18,10 @@ IaC w/ Deployment Pipeline
   * set environment variables
     * export AWS_ACCESS_KEY_ID=********************
     * export AWS_SECRET_ACCESS_KEY=***************************************
-    * export AWS_DEFAULT_REGION=us-west-2
+    * export AWS_DEFAULT_REGION=<aws_region>
 
-* Set the IP for the management console
-  * export TF_VAR_vpc_ingressIP=#.#.#.#
+* cd terraform\aws
+* . ./buildIt.sh
 
 ## Acknowledgments
 

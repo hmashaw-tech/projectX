@@ -30,7 +30,7 @@ resource "null_resource" "ansible-inventory" {
     }
 
     provisioner "local-exec" {
-        command = "echo [swarm-nodes] >> ../../ansible/ansible-inventory"
+        command = "echo [swarm-workers] >> ../../ansible/ansible-inventory"
     }
     
     provisioner "local-exec" {

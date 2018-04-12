@@ -1,40 +1,67 @@
 #
 
-if [[ -z $2 ]]; then
-    echo "buildIt.sh takes exactly two args: <ingressIP> <swarm_ami_id>"
-    exit
-fi
-echo ""
+#if [[ -z $2 ]]; then
+#    echo "buildIt.sh takes exactly two args: <ingressIP> <swarm_ami_id>"
+#    return 1
+#fi
 
-echo "Building Docker Swarm with ingressIP [$1] and ami ID: [$2]"
+echo
+echo "Retrieving Ingress IP..."
+INGRESS_IP=$(curl --silent http://checkip.amazonaws.com)
+
+echo "Retrieving AMI ID..."
+AMI_ID=$(aws ec2 describe-images \
+    --owners self \
+    --filters "Name=name,Values=ProjectX-Ubuntu-Docker" \
+    | grep ami | cut -f2 -d: | sed -e 's/\"//g; s/,//; s/\ //g')
+
+echo
+echo "Building Docker Swarm with ingressIP [$INGRESS_IP] and ami ID: [$AMI_ID]"
 read -p "Do you wish to continue? (only yes will proceed) > " yn
 
 if [[ $yn == 'yes' ]]; then
-    echo ""
+    echo
     echo "Building Swarm ..."
 
-    ingressIP=$1/32
-    echo "Setting Ingress IP -> $ingressIP ..."
-    export TF_VAR_swarm_ingressIP=$ingressIP
+    echo "Setting Ingress IP -> $INGRESS_IP ..."
+    export TF_VAR_vpc_ingressIP=$INGRESS_IP
 
-    echo "Setting AMI ID -> $2 ..."
-    export TF_VAR_swarm_ami_id=$2
+    echo "Setting AMI ID -> $AMI_ID ..."
+    export TF_VAR_swarm_ami_id=$AMI_ID
 
     echo "Setting ANSIBLE_HOST_KEY_CHECKING"
     export ANSIBLE_HOST_KEY_CHECKING=False
 
+    echo
     echo "Running Swarm Init ..."
     . ./swarm-init.sh
 
+    echo
     echo "Getting Swarm Tokens ..."
     . ./swarm-getTokens.sh
 
-    echo "Running Terraform plan ..."
-    terraform plan
-
-    echo "To continue and add swarm workers, run terraform apply..."
+    echo
+    echo "Continuing Swarm build ..."
+    terraform apply
 else
-    echo "Okay, stopping build."
+    echo
+    echo "Okay, terminating build."
+    echo
+    return 0
 fi
 
-echo ""
+. ./build-inspec.sh
+
+export swarm_manager_1_public_ip=$(terraform output swarm_manager_1_public_ip)
+
+echo
+echo "Swarm build is complete."
+echo
+ssh -i ../../keys/projectX.key ubuntu@$(terraform output swarm_manager_1_public_ip) docker node ls
+
+echo
+echo "To connect to the swarm manager run 'ssh -i ../../keys/projectX.key ubuntu@$swarm_manager_1_public_ip'"
+echo
+
+return 0
+
