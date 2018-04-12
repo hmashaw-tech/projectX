@@ -84,7 +84,8 @@ if [[ $yn == 'yes' ]]; then
     echo "buildIt.sh is complete."
     echo
     echo "The Visualizer service can be reached at http://$swarm_manager_1_public_ip:7000"
-    echo "The Explore California service can be reached at http://$swarm_manager_1_public_ip:9000"
+    echo "The Explore California service can be reached at http://$swarm_manager_1_public_ip:8000"
+    echo "The Ninja App service can be reached at http://$swarm_manager_1_public_ip:9000"
     echo
 
 else
