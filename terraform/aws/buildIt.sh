@@ -50,11 +50,19 @@ else
     return 0
 fi
 
+echo
+echo "Configuring for InSpec..."
 . ./build-inspec.sh
+echo
+
+echo
+echo "Running Ansible Playbook..."
+cd ../../ansible
+. ./ansible-run-playbook.sh
+cd $OLDPWD
 
 export swarm_manager_1_public_ip=$(terraform output swarm_manager_1_public_ip)
 
-echo
 echo "Swarm build is complete."
 echo
 ssh -i ../../keys/projectX.key ubuntu@$(terraform output swarm_manager_1_public_ip) docker node ls
@@ -63,5 +71,25 @@ echo
 echo "To connect to the swarm manager run 'ssh -i ../../keys/projectX.key ubuntu@$swarm_manager_1_public_ip'"
 echo
 
-return 0
+read -p "Would you like to deploy the Default Service Stack? (only yes will proceed) > " yn
+
+if [[ $yn == 'yes' ]]; then
+    echo
+    echo "Deploying 'Default Service Stack' ..."
+    echo
+
+    . ./deployApp.sh
+
+    echo
+    echo "buildIt.sh is complete."
+    echo
+    echo "The Visualizer service can be reached at http://$swarm_manager_1_public_ip:7000"
+    echo "The Explore California service can be reached at http://$swarm_manager_1_public_ip:9000"
+    echo
+
+else
+    echo
+    echo "buildIt.sh is complete."
+    echo
+fi
 

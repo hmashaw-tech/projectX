@@ -15,6 +15,24 @@ services:
     networks:
       - projectX_net
 
+  exploreCA:
+    image: markshaw/explore_california:demo
+    deploy:
+      replicas: 2
+    ports:
+      - "8000:80"
+    networks:
+      - projectX_net
+
+  NinjaApp:
+    image: markshaw/ninjaapp:1.0
+    deploy:
+      replicas: 2
+    ports:
+      - "9000:8000"
+    networks:
+      - projectX_net
+
   mongoDB:
     image: mongo:3.6.2
     deploy:
@@ -36,24 +54,6 @@ services:
     command: "sleep 31557600"
     deploy:
       replicas: 1
-    networks:
-      - projectX_net
-
-  NinjaApp:
-    image: markshaw/ninjaapp:1.0
-    deploy:
-      replicas: 2
-    ports:
-      - "8000:8000"
-    networks:
-      - projectX_net
-
-  exploreCA:
-    image: markshaw/explore_california:demo
-    deploy:
-      replicas: 2
-    ports:
-      - "9000:80"
     networks:
       - projectX_net
 
