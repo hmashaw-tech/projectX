@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  BusyBox:
+    image: busybox
+    command: "sleep 31557600"
+    deploy:
+      replicas: 1
+    networks:
+      - website_net
+
+
+networks:
+  website_net:
+
