@@ -5,6 +5,16 @@
 #    return 1
 #fi
 
+clear
+echo "Welcome to the cluster build script"
+read -p "Would you like to build a new AMI via Packer? (only yes will proceed) > " yn
+
+if [[ $yn == 'yes' ]]; then
+    cd ../../packer
+    . ./packer-build.sh
+    cd $OLDPWD
+fi
+
 echo
 echo "Retrieving Ingress IP..."
 INGRESS_IP=$(curl --silent http://checkip.amazonaws.com)
