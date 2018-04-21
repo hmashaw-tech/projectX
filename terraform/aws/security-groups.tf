@@ -40,6 +40,13 @@ resource "aws_security_group" "projectX-sg" {
     }
 
     ingress {
+        from_port = 8500
+        to_port   = 8500
+        protocol  = "tcp"
+        cidr_blocks = ["${var.vpc_ingressIP}/32"]
+    }
+
+    ingress {
         from_port = 8080
         to_port   = 8080
         protocol  = "tcp"
