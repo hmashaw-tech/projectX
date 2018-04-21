@@ -27,12 +27,16 @@ AMI_ID=$(aws ec2 describe-images \
 
 echo
 echo "Building Docker Swarm with ingressIP [$INGRESS_IP] and ami ID: [$AMI_ID]"
+echo "Current region [$AWS_DEFAULT_REGION]"
 read -p "Do you wish to continue? (only yes will proceed) > " yn
 
 if [[ $yn == 'yes' ]]; then
     echo
     echo "Building Swarm ..."
 
+    echo "Setting Swarm Region -> $AWS_DEFAULT_REGION"
+    export TF_VAR_vpc_region=$AWS_DEFAULT_REGION
+    
     echo "Setting Ingress IP -> $INGRESS_IP ..."
     export TF_VAR_vpc_ingressIP=$INGRESS_IP
 
