@@ -1,11 +1,1 @@
-swarm-managers: [
-    swarm-manager-1,
-    swarm-manager-2
-]
-swarm-vpc-id: vpc-0bf0aa72
-swarm-workers: [
-    swarm-worker-1,
-    swarm-worker-2
-]
-swarm_manager_1_private_ip: 10.100.138.136
-swarm_manager_1_public_ip: 52.35.234.193
+
