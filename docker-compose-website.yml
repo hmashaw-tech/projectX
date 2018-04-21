@@ -5,7 +5,7 @@ services:
     image: nginx-simple:latest
     container_name: explore_california
     volumes:
-	    - /var/www/html/explore_california:/var/www/html
+     - /var/www/html/explore_california:/var/www/html
     command: "NGINX"
     ports:
      - "8100:80"
