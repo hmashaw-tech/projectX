@@ -6,7 +6,7 @@
 #fi
 
 clear
-echo "Welcome to the cluster build script"
+echo "Welcome to the Swarm Cluster build script"
 read -p "Would you like to build a new AMI via Packer? (only yes will proceed) > " yn
 
 if [[ $yn == 'yes' ]]; then
