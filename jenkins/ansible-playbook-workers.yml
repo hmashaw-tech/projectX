@@ -1,0 +1,35 @@
+---
+- name: Configure CI Server (Workers)
+  hosts: workers
+  gather_facts: false
+  become: yes
+
+  tasks:
+    - name: Install Java
+      apt:
+        name: openjdk-8-jre-headless
+        state: present
+
+    - name: Add jenkins group
+      group:
+        name: jenkins
+        gid: 116
+        state: present
+
+    - name: Add jenkins user
+      user:
+        name: jenkins
+        uid: 112
+        group: jenkins
+        comment: Jenkins
+        home: /var/lib/jenkins
+        shell: /bin/bash
+
+    - name: Creates directory
+      file:
+        path: /var/lib/jenkins/jenkins_worker
+        owner: jenkins
+        group: jenkins
+        state: directory
+
+

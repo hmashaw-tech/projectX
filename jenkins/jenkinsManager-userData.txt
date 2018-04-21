@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Acknowledgments
+# https://www.digitalocean.com/community/tutorials/how-to-install-jenkins-on-ubuntu-16-04
+# https://www.digitalocean.com/community/tutorials/how-to-configure-jenkins-with-ssl-using-an-nginx-reverse-proxy
+# https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-16-04
+# https://www.digitalocean.com/community/tutorials/how-to-set-up-let-s-encrypt-with-nginx-server-blocks-on-ubuntu-16-04
+
+### = Already done via Packer build
+
+set -e -x
+
+sleep 15
+
+### sudo apt-get install -y apt-transport-https ca-certificates software-properties-common curl
+
+# add Jenkins repo key
+wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+
+# append the Debian package repository address to the server's sources.list
+echo deb https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list
+
+# add Docker repo key
+### curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+### sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+# add Cerbot repo - Let's Encrypt
+sudo add-apt-repository -y ppa:certbot/certbot
+
+# update repos
+sudo apt-get clean
+sudo apt-get update
+
+# install Jenkins and its dependencies, including Java
+sudo apt-get install -y jenkins
+
+# install Docker
+### sudo apt-get install -y docker-ce
+
+### sudo usermod -aG docker ubuntu
+
+# install nginx
+sudo apt-get install -y nginx
+
+# install python 2.7 - Ansible Support
+### sudo apt-get install -y python2.7
+
+### sudo ln -s /usr/bin/python2.7 /usr/bin/python
+
+# install Certbot's Nginx package
+sudo apt-get install -y python-certbot-nginx
+
+# start Jenkins
+sudo systemctl start jenkins
+
+# show status of services
+sudo systemctl status jenkins
+sudo systemctl status nginx
+
+# Firewall
+# Yes, enabled though using security-group
+sudo ufw allow OpenSSH
+sudo ufw allow 'Nginx Full'
+sudo ufw allow 8080
+sudo ufw --force enable
