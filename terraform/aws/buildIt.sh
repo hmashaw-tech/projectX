@@ -29,7 +29,7 @@ if [[ $yn == 'yes' ]]; then
     echo "Setting AMI ID -> $AMI_ID ..."
     export TF_VAR_swarm_ami_id=$AMI_ID
 
-    echo "Setting ANSIBLE_HOST_KEY_CHECKING"
+    echo "Setting ANSIBLE_HOST_KEY_CHECKING=False"
     export ANSIBLE_HOST_KEY_CHECKING=False
 
     echo

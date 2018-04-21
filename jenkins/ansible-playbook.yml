@@ -1,0 +1,186 @@
+---
+- name: Configure CI Server
+  hosts: manager
+  gather_facts: false
+  become: yes
+
+  vars:
+    - certbot_email: "{{ lookup('env','CERTBOT_EMAIL') }}"
+    - certbot_domain: "{{ lookup('env','CERTBOT_DOMAIN') }}"
+
+  tasks:
+    # Debug Test for ENV vars
+    - name: Debug Info
+      debug:
+        msg: "Cerbot data: {{ certbot_domain }} {{ certbot_email }}"
+      tags:
+        - debug
+
+    # Install Packages
+    - name: Install packages
+      apt:
+        name: '{{ item }}'
+        state: present
+      with_items:
+        - tree
+        - npm
+      tags:
+        - baseline
+
+    # Node - link node -> nodejs
+    - name: Node Link
+      file:
+        src: /usr/bin/nodejs
+        dest: /usr/bin/node
+        state: link
+      tags:
+        - baseline
+
+    # let's encrypt
+    - name: create /var/www/letsencrypt directory
+      file:
+        path: /var/www/letsencrypt/.well-known/acme-challenge
+        state: directory
+      tags:
+        - website
+  
+    # web site - test.com
+    - name: create test.com directory
+      file:
+        path: /var/www/test.com/html
+        owner: ubuntu
+        group: ubuntu
+        state: directory
+      tags:
+        - website
+
+    # web site - jenkins.shawmer.com
+    - name: create jenkins.shawmer.com directory
+      file:
+        path: /var/www/jenkins.shawmer.com/html
+        owner: ubuntu
+        group: ubuntu
+        state: directory
+      tags:
+        - website
+
+    # web sites index.html files
+    - name: copy sites index.html file
+      template:
+        src: templates/index.html.j2
+        dest: /var/www/{{ item.name }}/html/index.html
+        owner: ubuntu
+        group: ubuntu
+        mode: 0644
+      with_items:
+        - { name: test.com, msg: "Message for test.com site" }
+        - { name: jenkins.shawmer.com, msg: "Message for jenkins.shawmer.com site" }
+      tags:
+        - website
+
+    - name: copy nginx snippet
+      template:
+        src: templates/{{ item }}
+        dest: /etc/nginx/snippets/{{ item }}
+      with_items:
+        - letsencrypt.conf
+      tags:
+        - nginx
+
+    - name: copy nginx server block files
+      template:
+        src: templates/{{ item }}
+        dest: /etc/nginx/sites-available/{{ item }}
+      with_items:
+        - test.com
+        - jenkins.shawmer.com
+      tags:
+        - nginx
+
+    - name: Enable nginx server blocks
+      file:
+        src: /etc/nginx/sites-available/{{ item }}
+        dest: /etc/nginx/sites-enabled/{{ item }}
+        state: link
+      with_items:
+        - test.com
+        - jenkins.shawmer.com
+      tags:
+        - nginx
+
+    - name: copy nginx.conf
+      copy:
+        src: templates/nginx.conf
+        dest: /etc/nginx/nginx.conf
+        backup: yes
+      tags:
+        - nginx
+
+    - name: restart nginx service
+      service:
+        name: nginx
+        state: restarted
+      tags:
+        - nginx
+
+    - name: copy jenkins.default
+      copy:
+        src: templates/jenkins.default
+        dest: /etc/default/jenkins
+        backup: yes
+      tags:
+        - jenkins
+
+    - name: restart jenkins service
+      service:
+        name: jenkins
+        state: restarted
+      tags:
+        - jenkins
+
+    # Add the Jenkins User to the Docker Group
+    - name: Adding existing user 'jenkins' to group 'docker'
+      user: 
+        name: jenkins
+        groups: docker
+        append: yes
+      tags:
+        - jenkins
+
+    # Run certbot
+    - name: Check for previous certificate deployment
+      stat: path=/etc/letsencrypt/live/jenkins.shawmer.com/fullchain.pem
+      register: jenkinsCertInstalled
+      tags:
+        - certbot
+
+    - name: Perform initial certificate deployment
+      command: certbot --nginx -d {{ certbot_domain }} --email {{ certbot_email }} --agree-tos --non-interactive
+      when: jenkinsCertInstalled.stat.exists == false
+      tags:
+        - certbot
+
+    - name: copy nginx server block file - Jenkins SSL
+      template:
+        src: templates/{{ certbot_domain }}_
+        dest: /etc/nginx/sites-available/{{ certbot_domain }}
+      tags:
+        - onlyJenkinsCert
+
+    - name: restart nginx service
+      service:
+        name: nginx
+        state: restarted
+      tags:
+        - onlyJenkinsCert
+
+    # Add ports here as needed
+    - name: UFW Ports
+      ufw:
+        rule: allow
+        port: '{{ item }}'
+      with_items:
+        - 8000
+      tags:
+        - baseline
+
