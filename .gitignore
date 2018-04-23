@@ -1,27 +1,27 @@
-# Compiled files
+# Terraform
+.terraform/
 *.tfstate
 *.tfstate.backup
+tfplan.out
 
-# Module directory
-.terraform/
 
 # Keys
 keys
 *.key
 
+
 # InSpec params file
 params.yml
 
-#
+
+# Ansible
 ansible-inventory
 
-#
-node_modules/
 
-# Logs
+# Misc
+node_modules/
+*.retry
+*.lock
 logs
 *.log
 
-#
-*.retry
-*.lock
