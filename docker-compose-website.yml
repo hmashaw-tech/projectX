@@ -1,6 +1,5 @@
---- 
-networks: 
-  website_net: ~
+version: "3"
+
 services: 
   dbsrv: 
     environment: 
@@ -12,6 +11,8 @@ services:
     restart: always
     volumes: 
       - "dbdata:/var/lib/mysql"
+    networks: 
+      - website_net
 
   websrv: 
     deploy: 
@@ -21,10 +22,11 @@ services:
       - "8100:80"
     networks: 
       - website_net
+ 
     
   wordpress: 
     depends_on: 
-      - db
+      - dbsrv
     environment: 
       WORDPRESS_DB_HOST: "db:3306"
       WORDPRESS_DB_PASSWORD: wordpress
@@ -33,7 +35,12 @@ services:
     ports: 
       - "8200:443"
     restart: always
-version: "3"
-volumes: 
-  dbdata: ~
+    networks: 
+      - website_net
+
+volumes:
+  dbdata:
+
+networks:
+  website_net:
 

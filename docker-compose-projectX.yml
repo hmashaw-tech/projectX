@@ -24,6 +24,15 @@ services:
     networks:
       - projectX_net
 
+  NodeDemoApp:
+    image: markshaw/docker-node-demo
+    deploy:
+      replicas: 2
+    ports:
+      - "8500:8000"
+    networks:
+      - projectX_net
+
   NinjaApp:
     image: markshaw/ninjaapp:1.0
     deploy:
