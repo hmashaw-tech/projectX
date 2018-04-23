@@ -1,41 +1,42 @@
 version: "3"
 
-services:
-  nginx:
-    image: nginx-simple:latest
-    container_name: explore_california
-    volumes:
-      - /var/www/html/explore_california:/var/www/html
-    command: "NGINX"
-    ports:
-      - "8100:80"
-    deploy:
-      replicas: 2
-    networks:
+services: 
+  dbsrv: 
+    environment: 
+      MYSQL_DATABASE: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_USER: wordpress
+    image: "mysql:5.7"
+    restart: always
+    volumes: 
+      - "dbdata:/var/lib/mysql"
+    networks: 
       - website_net
 
-  db:
-    image: mysql:5.7
-    volumes:
-      - dbdata:/var/lib/mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: somewordpress
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-
-  wordpress:
-    depends_on:
-      - db
-    image: wordpress:latest
-    ports:
+  websrv: 
+    deploy: 
+      replicas: 2
+    image: ckc3690/websrv:latest
+    ports: 
+      - "8100:80"
+    networks: 
+      - website_net
+ 
+    
+  wordpress: 
+    depends_on: 
+      - dbsrv
+    environment: 
+      WORDPRESS_DB_HOST: "db:3306"
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_USER: wordpress
+    image: "wordpress:latest"
+    ports: 
       - "8200:443"
     restart: always
-    environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
+    networks: 
+      - website_net
 
 volumes:
   dbdata:
