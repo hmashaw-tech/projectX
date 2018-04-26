@@ -97,6 +97,7 @@ then
     echo -e "Running Packer Build ...\n"
 
     _packerBuild
+    sleep 5
     _getAMIid
 
     echo
